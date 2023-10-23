@@ -4,6 +4,7 @@ metadata:
   name: application-fake-token
   namespace: openshift-logging
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "1"
 spec:
   data:
@@ -16,6 +17,7 @@ metadata:
   name: audit-fake-token
   namespace: openshift-logging
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "1"
 spec:
   data:
@@ -28,6 +30,7 @@ metadata:
   name: log-forwarder-splunk-rhtap-application-secret
   namespace: openshift-logging
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "2"
 spec:
   dataFrom:
@@ -47,6 +50,7 @@ metadata:
   name: log-forwarder-splunk-rhtap-audit-secret
   namespace: openshift-logging
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "2"
 spec:
   dataFrom:
@@ -66,6 +70,7 @@ metadata:
   name: instance
   namespace: openshift-logging
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "3"
 spec:
   outputs:
@@ -102,10 +107,10 @@ metadata:
   namespace: openshift-logging
   name: "instance"
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     logging.openshift.io/preview-vector-collector: enabled
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   collection:
     logs:
       type: vector
-      vector: {}

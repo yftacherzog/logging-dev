@@ -2,13 +2,19 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: splunk
+  labels:
+    argocd.argoproj.io/managed-by: gitops-service-argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 ---
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: splunk-sa
   namespace: splunk
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -24,6 +30,7 @@ rules:
   verbs:
   - use
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -38,6 +45,7 @@ roleRef:
   name: splunk-role
   apiGroup: rbac.authorization.k8s.io
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -48,8 +56,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi 
+      storage: 20Gi
 ---
+
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
@@ -65,7 +74,7 @@ spec:
       serviceAccountName: splunk-sa
       containers:
       - name: splunk
-        image: quay.io/srivickynesh/splunk-dev-image:splunk-dev-bundle
+        image: quay.io/rhtap-o11y-dev/splunk-infra-dev:splunk-dev-bundle
         imagePullPolicy: Always
         resources:
           requests:
@@ -89,6 +98,7 @@ spec:
         persistentVolumeClaim:
           claimName: splunk-db-pvc
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -105,6 +115,7 @@ spec:
     - name: hec
       port: 8088
 ---
+
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -119,8 +130,8 @@ spec:
   port:
     targetPort: 8000
   wildcardPolicy: None
-
 ---
+
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -135,8 +146,8 @@ spec:
   port:
     targetPort: 8089
   wildcardPolicy: None
-
 ---
+
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:

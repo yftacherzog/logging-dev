@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd-rhtap-logging
+  labels:
+    argocd.argoproj.io/managed-by: gitops-service-argocd
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhtap-logging
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/eisraeli/logging-dev.git
+    targetRevision: RHTAPWATCH-531
+    path: logging-app
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grant-argocd
+  namespace: openshift-gitops
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-logging-manager
+rules:
+- apiGroups: ["operator.external-secrets.io"]
+  resources: ["operatorconfigs"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["generators.external-secrets.io"]
+  resources: ["fakes"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["external-secrets.io"]
+  resources: ["externalsecrets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["logging.openshift.io"]
+  resources: ["clusterloggings", "clusterlogforwarders"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+  namespace: splunk  
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+  namespace: splunk
+- apiGroups: ["apps.openshift.io"]
+  resources: ["deploymentconfigs"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["route.openshift.io"]
+  resources: ["routes"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+  namespace: splunk
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-external-logging-manager-binding
+  namespace: openshift-gitops
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+roleRef:
+  kind: ClusterRole
+  name: argocd-logging-manager
+  apiGroup: rbac.authorization.k8s.io
+---
