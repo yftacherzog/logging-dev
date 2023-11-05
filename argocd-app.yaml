@@ -14,8 +14,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/eisraeli/logging-dev.git
-    targetRevision: RHTAPWATCH-531
+    repoURL: https://github.com/yftacherzog/logging-dev.git
+    targetRevision: main
     path: logging-app
   destination:
     server: https://kubernetes.default.svc

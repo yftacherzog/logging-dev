@@ -76,12 +76,12 @@ spec:
   outputs:
     - name: splunk-receiver-application
       type: splunk
-      url: http://splunk-hec-splunk.apps.erancluster1.lab.psi.pnq2.redhat.com
+      url: http://splunk-hec-splunk.apps.yherzog2.lab.psi.pnq2.redhat.com
       secret:
         name: log-forwarder-splunk-rhtap-application-secret
     - name: splunk-receiver-audit
       type: splunk
-      url: http://splunk-hec-splunk.apps.erancluster1.lab.psi.pnq2.redhat.com
+      url: http://splunk-hec-splunk.apps.yherzog2.lab.psi.pnq2.redhat.com
       secret:
         name: log-forwarder-splunk-rhtap-audit-secret
   pipelines:
